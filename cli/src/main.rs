@@ -54,8 +54,8 @@ fn main() {
     };
     let mut request = SignedRequest::new(&method, &service, &region, Default::default());
     for header in headers {
-        if let [key, value] = &header.splitn(2, '=').collect::<Vec<_>>()[..] {
-            request.add_header(key, value)
+        if let [key, value] = &header.splitn(2, ':').collect::<Vec<_>>()[..] {
+            request.add_header(key.trim(), value.trim())
         }
     }
     request.set_payload(data.map(String::into_bytes));
