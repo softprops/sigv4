@@ -4,10 +4,10 @@ use smallvec::SmallVec;
 use std::error::Error as StdError;
 use structopt::StructOpt;
 mod error;
+use colored::Colorize;
+use colored_json::ToColoredJson;
 use error::Error;
 use std::fmt;
-use colored_json::ToColoredJson;
-use colored::Colorize;
 
 #[derive(StructOpt)]
 #[structopt(name = "sigv4", about = "sign aws sigv4 requests like a prod")]
@@ -68,13 +68,23 @@ impl fmt::Display for Display {
             }
             f.write_str("\n")?;
         }
-        let body = std::str::from_utf8(&res.body).unwrap_or_default();
-        if res.headers.get("content-type").iter().any(|value| "application/json" == *value) {
-            write!(f, "{}", body.to_colored_json_auto().unwrap())?;
-            //colored_json::write_colored_json(&value, &mut f)?
-            //writeln!(f, "{}", std::str::from_utf8(&res.body).unwrap_or_default())?;
-        } else {
-            f.write_str(body)?;
+        match std::str::from_utf8(&res.body) {
+            Ok(body) if !body.is_empty() => {
+                if res
+                    .headers
+                    .get("content-type")
+                    .iter()
+                    .any(|value| "application/json" == *value)
+                {
+                    match body.to_colored_json_auto() {
+                        Ok(colored) => write!(f, "{}", colored)?,
+                        _ => f.write_str(body)?,
+                    }
+                } else {
+                    f.write_str(body)?;
+                }
+            }
+            _ => (),
         }
 
         Ok(())
