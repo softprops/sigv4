@@ -107,12 +107,14 @@ where
     R: Read,
 {
     match value {
-        "-" => {
-            let mut buf = String::new();
-            stdin.read_to_string(&mut buf)?;
-            Ok(buf)
-        }
-        path if path.starts_with('@') => read_to_string(&path[1..]),
+        path if path.starts_with('@') => match &path[1..] {
+            "-" => {
+                let mut buf = String::new();
+                stdin.read_to_string(&mut buf)?;
+                Ok(buf)
+            }
+            path => read_to_string(path),
+        },
         raw => Ok(raw.to_string()),
     }
 }
@@ -172,7 +174,7 @@ mod tests {
 
     #[test]
     fn body_can_stdin() -> Result<(), Box<dyn StdError>> {
-        assert_eq!(body("-", &mut &b"stdin"[..])?, "stdin");
+        assert_eq!(body("@-", &mut &b"stdin"[..])?, "stdin");
         Ok(())
     }
 
