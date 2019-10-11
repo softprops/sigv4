@@ -12,6 +12,7 @@ use std::{
     fmt,
     fs::read_to_string,
     io::{self, Read},
+    str,
 };
 
 #[derive(StructOpt)]
@@ -76,7 +77,7 @@ impl fmt::Display for Display {
             }
             f.write_str("\n")?;
         }
-        match std::str::from_utf8(&res.body) {
+        match str::from_utf8(&res.body) {
             Ok(body) if !body.is_empty() => {
                 if res
                     .headers
@@ -107,7 +108,7 @@ where
     R: Read,
 {
     match value {
-        path if path.starts_with('@') => match &path[1..] {
+        path if path.starts_with('@') && path.len() > 1 => match &path[1..] {
             "-" => {
                 let mut buf = String::new();
                 stdin.read_to_string(&mut buf)?;
