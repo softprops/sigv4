@@ -6,6 +6,8 @@ use structopt::StructOpt;
 mod error;
 use error::Error;
 use std::fmt;
+use colored_json::ToColoredJson;
+use colored::Colorize;
 
 #[derive(StructOpt)]
 #[structopt(name = "sigv4", about = "sign aws sigv4 requests like a prod")]
@@ -60,13 +62,21 @@ impl fmt::Display for Display {
     ) -> std::result::Result<(), fmt::Error> {
         let Display((res, include_headers)) = self;
         if *include_headers {
-            writeln!(f, "HTTP/2 {}", res.status)?;
+            writeln!(f, "HTTP/2 {}", res.status.to_string().bold())?;
             for (k, v) in &res.headers {
-                writeln!(f, "{}: {}", k, v)?;
+                writeln!(f, "{}: {}", k.to_string().dimmed(), v)?;
             }
             f.write_str("\n")?;
         }
-        writeln!(f, "{}", std::str::from_utf8(&res.body).unwrap_or_default())?;
+        let body = std::str::from_utf8(&res.body).unwrap_or_default();
+        if res.headers.get("content-type").iter().any(|value| "application/json" == *value) {
+            write!(f, "{}", body.to_colored_json_auto().unwrap())?;
+            //colored_json::write_colored_json(&value, &mut f)?
+            //writeln!(f, "{}", std::str::from_utf8(&res.body).unwrap_or_default())?;
+        } else {
+            f.write_str(body)?;
+        }
+
         Ok(())
     }
 }
