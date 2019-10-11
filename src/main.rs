@@ -1,13 +1,18 @@
 use futures::future::Future;
 use rusoto_core::{signature::SignedRequest, Client, Region};
 use smallvec::SmallVec;
-use std::error::Error as StdError;
+use std::{error::Error as StdError, process::exit};
 use structopt::StructOpt;
 mod error;
 use colored::Colorize;
 use colored_json::ToColoredJson;
 use error::Error;
-use std::fmt;
+use std::{
+    convert::TryInto,
+    fmt,
+    fs::read_to_string,
+    io::{self, Read},
+};
 
 #[derive(StructOpt)]
 #[structopt(name = "sigv4", about = "sign aws sigv4 requests like a prod")]
@@ -27,8 +32,9 @@ struct Options {
     uri: String,
 }
 
-impl Into<SignedRequest> for Options {
-    fn into(self: Options) -> SignedRequest {
+impl TryInto<SignedRequest> for Options {
+    type Error = io::Error;
+    fn try_into(self: Options) -> io::Result<SignedRequest> {
         let Options {
             region,
             service,
@@ -48,8 +54,10 @@ impl Into<SignedRequest> for Options {
                 request.add_header(key.trim(), value.trim())
             }
         }
-        request.set_payload(data.map(String::into_bytes));
-        request
+        if let Some(value) = data {
+            request.set_payload(Some(body(&value, &mut io::stdin().lock())?.into_bytes()));
+        }
+        Ok(request)
     }
 }
 
@@ -91,12 +99,30 @@ impl fmt::Display for Display {
     }
 }
 
+fn body<R>(
+    value: &str,
+    stdin: &mut R,
+) -> io::Result<String>
+where
+    R: Read,
+{
+    match value {
+        "-" => {
+            let mut buf = String::new();
+            stdin.read_to_string(&mut buf)?;
+            Ok(buf)
+        }
+        path if path.starts_with('@') => read_to_string(&path[1..]),
+        raw => Ok(raw.to_string()),
+    }
+}
+
 fn run(options: Options) -> Result<(), Box<dyn StdError>> {
     let Options {
         include_headers, ..
     } = options;
     let response = Client::shared()
-        .sign_and_dispatch::<_, Error>(options.into(), |response| {
+        .sign_and_dispatch::<_, Error>(options.try_into()?, |response| {
             Box::new(response.buffer().from_err())
         })
         .sync()?;
@@ -108,7 +134,7 @@ fn main() {
     env_logger::init();
     if let Err(e) = run(Options::from_args()) {
         eprintln!("{}", e);
-        std::process::exit(1);
+        exit(1);
     }
 }
 
@@ -136,5 +162,26 @@ mod tests {
             Options::from_iter(&["sigv4", "http://foo.com"]).service,
             "execute-api"
         );
+    }
+
+    #[test]
+    fn body_can_be_raw_str() -> Result<(), Box<dyn StdError>> {
+        assert_eq!(body("text", &mut &b""[..])?, "text");
+        Ok(())
+    }
+
+    #[test]
+    fn body_can_stdin() -> Result<(), Box<dyn StdError>> {
+        assert_eq!(body("-", &mut &b"stdin"[..])?, "stdin");
+        Ok(())
+    }
+
+    #[test]
+    fn body_can_be_read_from_file() -> Result<(), Box<dyn StdError>> {
+        assert_eq!(
+            body("@tests/data/file.json", &mut &b""[..])?,
+            r#"{"hello":"aws"}"#
+        );
+        Ok(())
     }
 }
