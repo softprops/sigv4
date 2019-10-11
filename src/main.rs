@@ -62,11 +62,11 @@ impl fmt::Display for Display {
         if *include_headers {
             writeln!(f, "HTTP/2 {}", res.status)?;
             for (k, v) in &res.headers {
-                writeln!(f, "{} {}", k, v)?;
+                writeln!(f, "{}: {}", k, v)?;
             }
             f.write_str("\n")?;
         }
-        writeln!(f, "{}", String::from_utf8_lossy(&res.body))?;
+        writeln!(f, "{}", std::str::from_utf8(&res.body).unwrap_or_default())?;
         Ok(())
     }
 }
