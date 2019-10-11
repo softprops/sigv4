@@ -50,6 +50,19 @@ jobs:
     - name: Test
       run: cargo test --verbose
 
+  publish:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Rust
+        uses: hecrj/setup-rust-action@v1
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Publish
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: cargo publish --token ${{ secrets.CRATES_TOKEN }} || true
+
   release:
     needs: [test]
     strategy:
