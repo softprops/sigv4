@@ -12,6 +12,7 @@ name = "sigv4"
 path = "src/main.rs"
 
 [dependencies]
+http = "0.1"
 colored = "1.8"
 colored_json = "2.0"
 env_logger = "0.7"
@@ -19,3 +20,6 @@ futures = "0.1"
 rusoto_core = "0.41"
 smallvec = "0.6"
 structopt = "0.3"
+
+[dev-dependencies]
+indoc = "0.3"

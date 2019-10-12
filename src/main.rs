@@ -1,11 +1,11 @@
 use futures::future::Future;
-use rusoto_core::{signature::SignedRequest, Client, Region};
+use rusoto_core::{request::BufferedHttpResponse, signature::SignedRequest, Client, Region};
 use smallvec::SmallVec;
 use std::{error::Error as StdError, process::exit};
 use structopt::StructOpt;
 mod error;
 use colored::Colorize;
-use colored_json::ToColoredJson;
+use colored_json::{ColorMode, ToColoredJson};
 use error::Error;
 use std::{
     convert::TryInto,
@@ -62,14 +62,14 @@ impl TryInto<SignedRequest> for Options {
     }
 }
 
-struct Display((rusoto_core::request::BufferedHttpResponse, bool));
+struct Display((BufferedHttpResponse, bool, ColorMode));
 
 impl fmt::Display for Display {
     fn fmt(
         &self,
         f: &mut fmt::Formatter<'_>,
     ) -> std::result::Result<(), fmt::Error> {
-        let Display((res, include_headers)) = self;
+        let Display((res, include_headers, colors)) = self;
         if *include_headers {
             writeln!(f, "HTTP/2 {}", res.status.to_string().bold())?;
             for (k, v) in &res.headers {
@@ -85,7 +85,7 @@ impl fmt::Display for Display {
                     .iter()
                     .any(|value| "application/json" == *value)
                 {
-                    match body.to_colored_json_auto() {
+                    match body.to_colored_json(*colors) {
                         Ok(colored) => write!(f, "{}", colored)?,
                         _ => f.write_str(body)?,
                     }
@@ -129,7 +129,10 @@ fn run(options: Options) -> Result<(), Box<dyn StdError>> {
             Box::new(response.buffer().from_err())
         })
         .sync()?;
-    println!("{}", Display((response, include_headers)));
+    println!(
+        "{}",
+        Display((response, include_headers, ColorMode::default()))
+    );
     Ok(())
 }
 
@@ -144,6 +147,7 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use http::{HeaderMap, StatusCode};
 
     #[test]
     fn options_require_uri() {
@@ -186,5 +190,23 @@ mod tests {
             r#"{"hello":"aws"}"#
         );
         Ok(())
+    }
+
+    #[test]
+    fn display_renders_basic_response() {
+        colored::control::set_override(false);
+        let response = BufferedHttpResponse {
+            body: r#"{"hello":"aws"}"#.into(),
+            headers: HeaderMap::default(),
+            status: StatusCode::default(),
+        };
+        assert_eq!(
+            Display((response, true, ColorMode::Off)).to_string(),
+            indoc::indoc!(
+                r#"HTTP/2 200 OK
+
+                {"hello":"aws"}"#
+            )
+        )
     }
 }
