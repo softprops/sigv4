@@ -148,6 +148,7 @@ fn main() {
 mod tests {
     use super::*;
     use http::{HeaderMap, StatusCode};
+    use pretty_assertions::{assert_eq};
 
     #[test]
     fn options_require_uri() {
@@ -206,6 +207,27 @@ mod tests {
                 r#"HTTP/2 200 OK
 
                 {"hello":"aws"}"#
+            )
+        )
+    }
+
+    #[test]
+    fn display_renders_invalid_json_response() {
+        colored::control::set_override(false);
+        let mut headers: HeaderMap<String> = HeaderMap::default();
+        headers.insert("Content-Type", "application/json".into());
+        let response = BufferedHttpResponse {
+            body: r#"helloaws"#.into(),
+            headers,
+            status: StatusCode::default(),
+        };
+        assert_eq!(
+            Display((response, true, ColorMode::Off)).to_string(),
+            indoc::indoc!(
+                r#"HTTP/2 200 OK
+                content-type: application/json
+
+                helloaws"#
             )
         )
     }
