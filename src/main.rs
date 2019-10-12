@@ -148,7 +148,7 @@ fn main() {
 mod tests {
     use super::*;
     use http::{HeaderMap, StatusCode};
-    use pretty_assertions::{assert_eq};
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn options_require_uri() {
