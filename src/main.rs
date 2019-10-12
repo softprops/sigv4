@@ -124,10 +124,9 @@ fn run(options: Options) -> Result<(), Box<dyn StdError>> {
     let Options {
         include_headers, ..
     } = options;
+    let request = options.try_into()?;
     let response = Client::shared()
-        .sign_and_dispatch::<_, Error>(options.try_into()?, |response| {
-            Box::new(response.buffer().from_err())
-        })
+        .sign_and_dispatch::<_, Error>(request, |response| Box::new(response.buffer().from_err()))
         .sync()?;
     println!(
         "{}",
