@@ -2,6 +2,12 @@
 
 > An AWS SigV4 service cli
 
+## about
+
+Security is a first class concern of any modern application. When you offload your services onto managed AWS infrustrcture this is not different when you expose that infrastructure over the internet. AWS offers a built-in security system for managing identity between services called [IAM](https://aws.amazon.com/iam/) and defines a protocol authenticating requests between services that leverages that IAM information called [signature v4 signed requests](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
+
+This is a curl-like CLI for interacting with services that uses your local AWS credentials to sign requests for you.
+
 ## usage
 
 todo
