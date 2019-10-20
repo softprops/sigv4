@@ -23,4 +23,3 @@ structopt = "0.3"
 
 [dev-dependencies]
 pretty_assertions = "0.6"
-indoc = "0.3"

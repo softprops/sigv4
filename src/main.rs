@@ -202,11 +202,9 @@ mod tests {
         };
         assert_eq!(
             Display((response, true, ColorMode::Off)).to_string(),
-            indoc::indoc!(
-                r#"HTTP/2 200 OK
+            r#"HTTP/2 200 OK
 
-                {"hello":"aws"}"#
-            )
+{"hello":"aws"}"#
         )
     }
 
@@ -222,12 +220,10 @@ mod tests {
         };
         assert_eq!(
             Display((response, true, ColorMode::Off)).to_string(),
-            indoc::indoc!(
-                r#"HTTP/2 200 OK
-                content-type: application/json
+            r#"HTTP/2 200 OK
+content-type: application/json
 
-                helloaws"#
-            )
+helloaws"#
         )
     }
 }
