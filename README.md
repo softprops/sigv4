@@ -21,7 +21,7 @@ $ aws organizations \
 
 Secondly you'll need to configure your API GateWay to only allow access to that organization.
 
-With Serverless Framework, you can simply declare a `resourcePolicy` that limits access to your AWS Organization Id and declare an `aws_iam` authorizer for your private functions in your serverless.yml file.
+With Serverless Framework, you can simply [declare a `resourcePolicy`](https://serverless.com/framework/docs/providers/aws/events/apigateway+/#http-endpoints-with-aws_iam-authorizers) that limits access to your AWS Organization Id and [declare an `aws_iam` authorizer](https://serverless.com/framework/docs/providers/aws/events/apigateway/+#http-endpoints-with-aws_iam-authorizers) for your private functions in your serverless.yml file.
 
 ```diff
 service: sigv4-test
@@ -29,8 +29,6 @@ service: sigv4-test
 provider:
   name: aws
   runtime: YOUR_DEFAULT_FUNCTION_RUNTIME
-+  # https://serverless.com/framework/docs/providers/aws/events/apigateway+/#http-endpoints-with-aws_iam-authorizers
-+  # 1) declare resource policy to limit access to your API GateWay
 +  resourcePolicy:
 +    - Effect: Allow
 +      Principal: '*'
@@ -54,8 +52,6 @@ functions:
       - http:
           path: '/'
           method: GET
-+          # have AWS IAM manage authorizing access to this function
-+          # https://serverless.com/framework/docs/providers/aws/events/apigateway/+#http-endpoints-with-aws_iam-authorizers
 +          authorizer: aws_iam
 ```
 
