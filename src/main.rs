@@ -16,20 +16,28 @@ use std::{
 };
 
 #[derive(StructOpt)]
-#[structopt(name = "sigv4", about = "sign aws sigv4 requests like a prod")]
+#[structopt(name = "sigv4")]
+/// sign aws sigv4 requests like a pro
 struct Options {
     #[structopt(short = "r", long = "region", default_value = "us-east-1")]
+    /// AWS Region your resource is hosted in (defaults to us-east-1)
     region: String,
     #[structopt(short = "s", long = "service", default_value = "execute-api")]
+    /// AWS service name (defaults to execute-api)
     service: String,
     #[structopt(short = "X", long = "request", default_value = "GET")]
+    /// HTTP method (defaults to GET)
     method: String,
     #[structopt(short = "i", long = "include")]
+    /// Include HTTP headers in output (defaults to false)
     include_headers: bool,
     #[structopt(short = "H", long = "header")]
+    /// Optional headers to include with the request
     headers: Vec<String>,
+    /// Optional request body to send with the request
     #[structopt(short = "d", long = "data")]
     data: Option<String>,
+    /// Remote resource URI
     uri: String,
 }
 
