@@ -53,7 +53,9 @@ impl TryInto<SignedRequest> for Options {
             uri,
             ..
         } = self;
-        let mut url = url::Url::parse(&uri).unwrap();
+        let mut url = url::Url::parse(&uri).map_err(|_| {
+            io::Error::new(io::ErrorKind::InvalidInput, "could not parse uri as url")
+        })?;
         let params: Vec<(_, _)> = url.query_pairs().into_owned().collect();
         url.set_query(None);
         let region = Region::Custom {
