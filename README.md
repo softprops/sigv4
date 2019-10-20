@@ -2,21 +2,15 @@
 
 > An AWS SigV4 service cli
 
-## about
-
-Security is a first class concern of any modern application. When you offload your services onto managed AWS infrustrcture this is not different when you expose that infrastructure over the internet. AWS offers a built-in security system for managing identity between services called [IAM](https://aws.amazon.com/iam/) and defines a protocol authenticating requests between services that leverages that IAM information called [signature v4 signed requests](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
-
-This is a curl-like CLI for interacting with services that uses your local AWS credentials to sign requests for you.
-
 ## usage
 
 todo
 
-## typical setup
+## 🗺️ lambda setup
 
-Let's say you're a company with a serverless strategy. You expose some private AWS Lambdas behind API GateWay and would like to limit their access to your organizations internal use. The following describes how you might go about doing that.
+Let's say you're a company with a serverless strategy. You'll likely want to expose some private AWS Lambdas behind API GateWay and would like to limit their access to your organizations internal use. The following describes how you might go about doing that.
 
-First you'll need to identify your AWS organiztaion id. You can get this easily from the command line with the `aws` cli.
+First you'll need to identify your **AWS organiztaion id**. You can get this easily from the command line with the `aws` cli.
 
 ```sh
 $ aws organizations \
@@ -60,5 +54,9 @@ functions:
           method: GET
 +          authorizer: aws_iam
 ```
+
+## 📝 about sigv4
+
+Security is a first class concern of any modern application. When you offload your services onto managed AWS infrustrcture this is not different when you expose that infrastructure over the internet. AWS offers a built-in security system for managing identity between services called [IAM](https://aws.amazon.com/iam/) and defines a protocol authenticating requests between services that leverages that IAM information called [signature v4 signed requests](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
 
 Doug Tangren (softprops) 2019
