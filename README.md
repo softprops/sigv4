@@ -23,29 +23,29 @@ Secondly you'll need to configure your API GateWay to only allow access to that 
 
 With Serverless Framework, you can simply declare a `resourcePolicy` that limits access to your AWS Organization Id and declare an `aws_iam` authorizer for your private functions
 
-```yaml
+```diff
 service: sigv4-test
 
 provider:
   name: aws
   runtime: YOUR_DEFAULT_FUNCTION_RUNTIME
-	# 1) declare resource policy to limit access to your API GateWay
-  # https://serverless.com/framework/docs/providers/aws/events/apigateway/#http-endpoints-with-aws_iam-authorizers
-  resourcePolicy:
-    - Effect: Allow
-      Principal: '*'
-      Action: execute-api:Invoke
-      Resource: arn:aws:execute-api:*
-      Condition:
-        StringEquals:
-          aws:PrincipalOrgID: YOUR_AWS_ORG_ID
-    - Effect: Deny
-      Principal: '*'
-      Action: execute-api:Invoke
-      Resource: arn:aws:execute-api:*
-      Condition:
-        StringNotEquals:
-          aws:PrincipalOrgID: YOUR_AWS_ORG_ID
++  # https://serverless.com/framework/docs/providers/aws/events/apigateway+/#http-endpoints-with-aws_iam-authorizers
++  # 1) declare resource policy to limit access to your API GateWay
++  resourcePolicy:
++    - Effect: Allow
++      Principal: '*'
++      Action: execute-api:Invoke
++      Resource: arn:aws:execute-api:*
++      Condition:
++        StringEquals:
++          aws:PrincipalOrgID: YOUR_AWS_ORG_ID
++    - Effect: Deny
++      Principal: '*'
++      Action: execute-api:Invoke
++      Resource: arn:aws:execute-api:*
++      Condition:
++        StringNotEquals:
++          aws:PrincipalOrgID: YOUR_AWS_ORG_ID
 
 functions:
   hello:
@@ -54,9 +54,9 @@ functions:
       - http:
           path: '/'
           method: GET
-          # have AWS IAM manage authorizing access to this function
-          # https://serverless.com/framework/docs/providers/aws/events/apigateway/#http-endpoints-with-aws_iam-authorizers
-          authorizer: aws_iam
++          # have AWS IAM manage authorizing access to this function
++          # https://serverless.com/framework/docs/providers/aws/events/apigateway/+#http-endpoints-with-aws_iam-authorizers
++          authorizer: aws_iam
 ```
 
 Doug Tangren (softprops) 2019
