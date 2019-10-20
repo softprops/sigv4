@@ -20,6 +20,7 @@ futures = "0.1"
 rusoto_core = { version = "0.41",  default_features = false, features=["rustls"] }
 smallvec = "0.6"
 structopt = "0.3"
+url = "2.1"
 
 [dev-dependencies]
 pretty_assertions = "0.6"

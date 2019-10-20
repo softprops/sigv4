@@ -20,16 +20,16 @@ use std::{
 /// sign aws sigv4 requests like a pro
 struct Options {
     #[structopt(short = "r", long = "region", default_value = "us-east-1")]
-    /// AWS Region your resource is hosted in (defaults to us-east-1)
+    /// AWS Region your resource is hosted in
     region: String,
     #[structopt(short = "s", long = "service", default_value = "execute-api")]
-    /// AWS service name (defaults to execute-api)
+    /// AWS service name
     service: String,
     #[structopt(short = "X", long = "request", default_value = "GET")]
-    /// HTTP method (defaults to GET)
+    /// HTTP method
     method: String,
     #[structopt(short = "i", long = "include")]
-    /// Include HTTP headers in output (defaults to false)
+    /// Include HTTP headers in output
     include_headers: bool,
     #[structopt(short = "H", long = "header")]
     /// Optional headers to include with the request
@@ -53,15 +53,21 @@ impl TryInto<SignedRequest> for Options {
             uri,
             ..
         } = self;
+        let mut url = url::Url::parse(&uri).unwrap();
+        let params: Vec<(_, _)> = url.query_pairs().into_owned().collect();
+        url.set_query(None);
         let region = Region::Custom {
             name: region,
-            endpoint: uri,
+            endpoint: url.as_str().into(),
         };
         let mut request = SignedRequest::new(&method, &service, &region, Default::default());
         for header in headers {
             if let [key, value] = &header.splitn(2, ':').collect::<SmallVec<[_; 2]>>()[..] {
                 request.add_header(key.trim(), value.trim())
             }
+        }
+        for (k, v) in params {
+            request.add_param(k, v);
         }
         if let Some(value) = data {
             request.set_payload(Some(body(&value, &mut io::stdin().lock())?.into_bytes()));
