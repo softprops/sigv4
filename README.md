@@ -2,9 +2,9 @@
   sigv4
 </h1>
 
-<p align="center">
+<div align="center">
    An AWS SigV4 service cli
-</p>
+</div>
 
 <div align="center">
   <img src="demo.png"/>
