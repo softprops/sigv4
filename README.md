@@ -116,6 +116,60 @@ functions:
 +          authorizer: aws_iam
 ```
 
+If you are using AWS SAM, this might look like
+
+```diff
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'SAM template for SECRET_SAUCE'
+Resources:
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
++      Auth:
++        DefaultAuthorizer: AWS_IAM
+      MethodSettings:
+        - ResourcePath: '/*'
+          HttpMethod: '*'
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          title: !Sub "${AWS::StackName}"
+          version: 1.0
++        x-amazon-apigateway-policy:
++          Version: '2012-10-17'
++          Statement:
++            - Effect: Allow
++              Principal: '*'
++              Action: execute-api:Invoke
++              Resource: arn:aws:execute-api:*
++              Condition:
++                StringEquals:
++                  aws:PrincipalOrgID: YOUR_AWS_ORG_ID
++            - Effect: Deny
++              Principal: '*'
++              Action: execute-api:Invoke
++              Resource: arn:aws:execute-api:*
++              Condition:
++                StringNotEquals:
++                  aws:PrincipalOrgID: YOUR_AWS_ORG_ID
+
+  hello:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: YOUR_FUNCTION_HANDLER
+      Events:
+        MyApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /
+            Method: GET
+      Runtime: YOUR_DEFAULT_FUNCTION_RUNTIME
+      CodeUri: ...
+```
+
 ### 📝 about sigv4
 
 Security is a first class concern of any modern application. This is no different when you offload your services onto managed AWS infrastrcture and expose that infrastructure over the internet. Thankfully AWS offers a built-in system for managing identity between services called [IAM](https://aws.amazon.com/iam/) and defines a secure protocol for authenticating requests between services that leverages that IAM information called [signature v4 signed requests](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
