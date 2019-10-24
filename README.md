@@ -23,7 +23,7 @@
 * familiar interface
 * colors
 * pretty printed application/json responses
-* uses standard AWS credential chain for authenication
+* uses standard AWS credential chain for authentication
 
 ## 📦 install
 
