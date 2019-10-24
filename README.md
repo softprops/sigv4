@@ -18,6 +18,12 @@
 
 <br/>
 
+## 🍬 features
+
+* familiar interface
+* colors
+* pretty printed application/json responses
+
 ## 📦 install
 
 ### Via GitHub Releases
@@ -57,13 +63,6 @@ OPTIONS:
 ARGS:
     <uri>    Remote resource URI
 ```
-
-## 🍬 features
-
-* familiar interface
-* colors
-* pretty printed application/json responses
-
 
 ## 📓 resources
 
