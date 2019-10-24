@@ -67,9 +67,13 @@ ARGS:
 
 ## 📓 resources
 
+### 📝 about sigv4
+
+Security is a first class concern of any modern application. This is no different when you offload your services onto managed AWS infrastrcture and expose that infrastructure over the internet. Thankfully AWS offers a built-in system for managing identity between services called [IAM](https://aws.amazon.com/iam/) and defines a secure protocol for authenticating requests between services that leverages that IAM information called [signature v4 signed requests](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
+
 ### 🗺️ lambda setup
 
-Let's say you're a company with a serverless strategy. You'll likely want to expose some private AWS Lambdas behind API GateWay and would like to limit access to your organization's internal use. The following outlines how you might go about doing that.
+Let's say you're a company with a serverless strategy. You'll likely want to expose some private AWS Lambdas behind API Gateway and would like to limit access to your organization's internal use. The following outlines how you might go about doing that.
 
 First you'll need to identify your [AWS organiztaion](https://aws.amazon.com/organizations/) **id**. You can get this from the [Organizations console](https://console.aws.amazon.com/organizations/home) or the command line with the `aws` cli.
 
@@ -169,9 +173,5 @@ Resources:
       Runtime: YOUR_DEFAULT_FUNCTION_RUNTIME
       CodeUri: ...
 ```
-
-### 📝 about sigv4
-
-Security is a first class concern of any modern application. This is no different when you offload your services onto managed AWS infrastrcture and expose that infrastructure over the internet. Thankfully AWS offers a built-in system for managing identity between services called [IAM](https://aws.amazon.com/iam/) and defines a secure protocol for authenticating requests between services that leverages that IAM information called [signature v4 signed requests](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
 
 Doug Tangren (softprops) 2019
