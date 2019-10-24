@@ -33,7 +33,7 @@ Prebuilt binaries for osx and linux and windows are available for download direc
 
 ```sh
 $ curl -L \
- "https://github.com/softprops/sigv4/releases/download/v0.0.0/sigv4-$(uname -s)-$(uname -m).tar.gz" \
+ "https://github.com/softprops/sigv4/releases/download/v0.1.0/sigv4-$(uname -s)-$(uname -m).tar.gz" \
   | tar -xz
 ```
 
