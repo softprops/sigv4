@@ -118,6 +118,6 @@ functions:
 
 ### 📝 about sigv4
 
-Security is a first class concern of any modern application. When you offload your services onto managed AWS infrustrcture this is not different when you expose that infrastructure over the internet. AWS offers a built-in security system for managing identity between services called [IAM](https://aws.amazon.com/iam/) and defines a protocol authenticating requests between services that leverages that IAM information called [signature v4 signed requests](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
+Security is a first class concern of any modern application. This is no different when you offload your services onto managed AWS infrastrcture and expose that infrastructure over the internet. Thankfully AWS offers a built-in system for managing identity between services called [IAM](https://aws.amazon.com/iam/) and defines a secure protocol for authenticating requests between services that leverages that IAM information called [signature v4 signed requests](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
 
 Doug Tangren (softprops) 2019
