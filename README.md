@@ -1,6 +1,22 @@
-# sigv4 [![actions](https://github.com/softprops/sigv4/workflows/Main/badge.svg)](https://github.com/softprops/sigv4/actions)
+<h1 align="center">
+  sigv4
+</h1>
 
-> An AWS SigV4 service cli
+<p align="center">
+   An AWS SigV4 service cli
+</p>
+
+<div align="center">
+  <img src="demo.png"/>
+</div>
+
+<div align="center">
+  <a href="https://github.com/softprops/sigv4/actions">
+    <img src="https://github.com/softprops/sigv4/workflows/Main/badge.svg"/>
+  </a>
+</div>
+
+<br/>
 
 ## usage
 
