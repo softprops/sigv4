@@ -18,7 +18,7 @@
 
 <br/>
 
-## install
+## 📦 install
 
 ### Via GitHub Releases
 
@@ -30,7 +30,7 @@ $ curl -L \
   | tar -xz
 ```
 
-## usage
+## 🤸 usage
 
 If you know curl, you'll be right at home with with sigv4. It's interface was designed to be familiar to those that are
 all ready familiar with interacting with http services from the command line
@@ -58,7 +58,14 @@ ARGS:
     <uri>    Remote resource URI
 ```
 
-## resources
+## 🍬 features
+
+* familiar interface
+* colors
+* pretty printed application/json responses
+
+
+## 📓 resources
 
 ### 🗺️ lambda setup
 
