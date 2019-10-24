@@ -18,6 +18,18 @@
 
 <br/>
 
+## install
+
+### Via GitHub Releases
+
+Prebuilt binaries for osx and linux and windows are available for download directly from [GitHub Releases](https://github.com/softprops/sigv4/releases)
+
+```sh
+$ curl -L \
+ "https://github.com/softprops/sigv4/releases/download/v0.0.0/sigv4-$(uname -s)-$(uname -m).tar.gz" \
+  | tar -xz
+```
+
 ## usage
 
 If you know curl, you'll be right at home with with sigv4. It's interface was designed to be familiar to those that are
