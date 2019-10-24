@@ -47,7 +47,7 @@ $ aws organizations \
 
 Secondly, you'll need to configure your API Gateway to **only allow access to that organization**.
 
-With Serverless Framework, you can do this declaratively as part of your deployment by [declaring a `resourcePolicy`](https://serverless.com/framework/docs/providers/aws/events/apigateway+/#http-endpoints-with-aws_iam-authorizers) that limits access to your AWS Organization Id and [declare an `aws_iam` authorizer](https://serverless.com/framework/docs/providers/aws/events/apigateway/+#http-endpoints-with-aws_iam-authorizers) for your private functions in your serverless.yml file.
+With Serverless Framework, you can do this declaratively as part of your deployment by [declaring a `resourcePolicy`](https://serverless.com/framework/docs/providers/aws/events/apigateway/#http-endpoints-with-aws_iam-authorizers) that limits access to your AWS Organization Id and [declare an `aws_iam` authorizer](https://serverless.com/framework/docs/providers/aws/events/apigateway/#http-endpoints-with-aws_iam-authorizers) for your private functions in your serverless.yml file.
 
 ```diff
 service: SECRET_SAUCE
